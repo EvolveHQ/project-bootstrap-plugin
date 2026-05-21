@@ -103,41 +103,69 @@ questions.
 
 ## Step 4 — Assessment (10 questions)
 
-Ask all 10 in one batch, wait for answers, do not assume defaults. After
-answers, summarise the resulting plan in 5–10 lines and ask for sign-off
-before writing files.
+**Ask the questions one at a time, not in a batch.** For each question,
+state a **recommended** option (label it "Recommended") with one short
+sentence on why; the user picks it, picks an alternative, or types a
+custom answer. Wait for the answer before moving to the next question.
+
+If the host CLI exposes a structured single-select question tool (e.g.
+Claude Code's `AskUserQuestion`), use it and mark the recommended
+option with the literal "(Recommended)" suffix in its label. Otherwise
+ask in plain text, listing options as A/B/C and naming the recommended
+one.
+
+After all 10 answers are in, summarise the resulting plan in 5–10
+lines and ask for sign-off before writing any files.
 
 1. **Project identity.** Name, one-line description, doc language
    (en-GB / en-US / other), and — if existing repo — what current files
-   (README, CONTRIBUTING, docs/, adr/, etc.) must be preserved or merged.
+   (README, CONTRIBUTING, docs/, adr/, etc.) must be preserved or
+   merged. *No recommendation — project-specific.*
 2. **ADR shape.** Single shape, or capability-vs-technology split?
+   **Recommended: single shape** — start simple, split later if
+   long-lived product requirements clearly outlive their
+   implementations.
 3. **Status lifecycle.** Full `Proposed → Accepted → Implemented →
-   (Superseded | Deprecated)`, or shorter (e.g. drop `Implemented` if
-   there's no clear per-ADR ship event)?
+   (Superseded | Deprecated)`, or shorter (drop `Implemented`)?
+   **Recommended: full lifecycle** — the `Implemented` rung is cheap
+   and gives a clear "what's shipped" signal.
 4. **Plan folder.** Use `plan/todo/` + `plan/done/`, or skip it because
    work is tracked elsewhere? If kept, what event counts as "shipped"?
+   **Recommended: use it** — the queue is what makes the convention
+   set actionable for agents; default completion event is "merged to
+   main + CI green".
 5. **Multi-agent setup.** Single agent or many? If many, rough domain
    partition (or `default-agent` placeholder). Use the `LOCKS.md`
-   file-claim discipline?
+   file-claim discipline? **Recommended: single agent, skip LOCKS** —
+   LOCKS earns its keep only with real parallel agents; pure overhead
+   otherwise.
 6. **Git contract.** Confirm or override each — Conventional Commits;
    mandatory `Rationale:` footer on ADR-touching commits; signed
    commits; ADR-revision tags `adr-NNNN-rN`; whether agent commits
-   carry a `Co-Authored-By` trailer (default: none mandatory).
+   carry a `Co-Authored-By` trailer. **Recommended: Conventional
+   Commits ON, `Rationale:` footer ON, signed commits ON, ADR-revision
+   tags OFF, `Co-Authored-By` trailer OFF.**
 7. **Optional artefacts.** Which now vs. defer: `GLOSSARY.md`,
    `domains/<slug>/README.md` groupings, technology-ADR template?
-   (Defaults: defer all three; add when scale demands.)
+   **Recommended: defer all three** — add when scale demands
+   (terminology drift, >20 ADRs, or technology decisions splitting
+   from product decisions).
 8. **Verify gate.** What command(s) decide a change is shippable
-   (`npm test`, CI workflow, deploy + smoke, manual)? Required to know
-   whether `_agent/prompts/autonomous.md` is safe to write.
+   (`npm test`, CI workflow, deploy + smoke, manual)? *No
+   recommendation — project-specific.* If the user has no real gate,
+   the skill will refuse to write `_agent/prompts/autonomous.md`.
 9. **Existing-content conflicts** (existing repos only). Any
    conventions already in place (commit format, branch policy, ADR
    style, status names) the new layout must defer to or merge with?
+   *No recommendation — project-specific.* Skip this question on a
+   fresh repo.
 10. **Domain-specific hard rules to bake in.** Any project-specific
     constraints to enforce in `AGENTS.md` / `CONVENTIONS.md` from day
     one — e.g. vendor-naming restriction, regulated-evidence posture
     (attribution, retention, e-signatures), language mandate,
-    mandatory user-story personas, separated audit streams? Default:
-    none — name them explicitly if wanted.
+    mandatory user-story personas, separated audit streams?
+    **Recommended: none from day one** — add later when a concrete
+    requirement appears; pre-emptive hard rules accumulate as cruft.
 
 ## Step 5 — Output sequence (after sign-off)
 

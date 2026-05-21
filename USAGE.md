@@ -39,9 +39,16 @@ parallel tree.
 
 ### Phase B — Assess
 
-The skill asks all 10 assessment questions in one batch, waits for
-answers, then summarises the resulting plan in 5–10 lines and asks for
-sign-off. **It does not write files before sign-off.**
+The skill asks the 10 assessment questions **one at a time**, in order.
+For each question it states a **recommended** option with one short
+sentence on why, plus the alternatives. You pick the recommended
+option, pick an alternative, or type a custom answer. After all 10
+answers are in, the skill summarises the resulting plan in 5–10 lines
+and asks for sign-off. **It does not write files before sign-off.**
+
+If the host CLI supports structured single-select (e.g. Claude Code's
+`AskUserQuestion`), the recommended option is labelled "(Recommended)"
+in the picker; otherwise the recommendation is named in plain text.
 
 ### Phase C — Write
 
@@ -54,21 +61,21 @@ every merge decision in the commit message.
 
 ## 3. The 10 assessment questions
 
-Each question's answer changes specific files. Knowing this up front
-helps you give precise answers.
+Each question's answer changes specific files. Knowing the
+recommendation and what it changes up front helps you answer quickly.
 
-| # | Question | What it changes |
-|---|----------|-----------------|
-| 1 | **Project identity** — name, one-liner, doc language, existing files to preserve. | Header of `AGENTS.md`, `CONVENTIONS.md`, `README.md`; language mandate (if any) added to `CONVENTIONS.md` §Project. |
-| 2 | **ADR shape** — single vs. capability-vs-technology split. | Whether `adr/NNNN-template.md` (technology) is created in addition to `adr/0000-template.md`. Section-order rules in `CONVENTIONS.md` §ADR Shapes and `AGENTS.md` §Hard rules. |
-| 3 | **Status lifecycle** — full or shorter. | Status table in `CONVENTIONS.md` §ADR Files and `plan/README.md` §Status semantics. Whether the `Implemented` rung exists at all. |
-| 4 | **Plan folder** — use it or skip; if used, what is the "shipped" event. | Whether `plan/` is created at all. The completion-event sentence in `CONVENTIONS.md` §Plan Folder, `plan/README.md`, and `AGENTS.md` §Plan folder. |
-| 5 | **Multi-agent setup** — single or many; LOCKS discipline yes/no. | `_agent/ROLES.md` content (single `default-agent` row vs. multiple). `AGENTS.md` §Multi-agent workflow. `_agent/LOCKS.md` may be skipped entirely for a single agent. |
-| 6 | **Git contract** — Conventional Commits, `Rationale:` footer, signed commits, ADR-revision tags, `Co-Authored-By` trailer. | `AGENTS.md` §Git contract and `CONVENTIONS.md` §Git Contract bullets. Default is no `Co-Authored-By` trailer unless you ask. |
-| 7 | **Optional artefacts** — `GLOSSARY.md`, `domains/`, technology-ADR template. | Whether those files / directories are created. Defaults: defer all three. |
-| 8 | **Verify gate** — what command(s) decide a change is shippable. | Whether `_agent/prompts/autonomous.md` is written. The skill **refuses** to write the autonomous prompt without a real verify gate, because unsupervised runs without one ship broken work. The Step 4 line of the prompt is filled with your command. |
-| 9 | **Existing-content conflicts** (existing repos only) — current commit format, branch policy, ADR style, status names the new layout must respect. | Merge behaviour during writes; commit-message notes calling out each compromise. |
-| 10 | **Domain-specific hard rules** to enforce from day one — e.g. vendor-naming restriction, regulated-evidence posture (attribution, retention, e-signatures), language mandate, mandatory user-story personas, separated audit streams. | Additional sections in `CONVENTIONS.md` and additional bullets in `AGENTS.md` §Hard rules. |
+| # | Question | Recommended | What it changes |
+|---|----------|-------------|-----------------|
+| 1 | **Project identity** — name, one-liner, doc language, existing files to preserve. | *No default — project-specific.* | Header of `AGENTS.md`, `CONVENTIONS.md`, `README.md`; language mandate (if any) added to `CONVENTIONS.md` §Project. |
+| 2 | **ADR shape** — single vs. capability-vs-technology split. | **Single shape.** Start simple; split later if long-lived product requirements clearly outlive their implementations. | Whether `adr/NNNN-template.md` (technology) is created in addition to `adr/0000-template.md`. Section-order rules in `CONVENTIONS.md` §ADR Shapes and `AGENTS.md` §Hard rules. |
+| 3 | **Status lifecycle** — full or shorter. | **Full lifecycle.** The `Implemented` rung is cheap and gives a clear "what's shipped" signal. | Status table in `CONVENTIONS.md` §ADR Files and `plan/README.md` §Status semantics. Whether the `Implemented` rung exists at all. |
+| 4 | **Plan folder** — use it or skip; if used, what is the "shipped" event. | **Use it.** The queue makes the convention set actionable for agents. Default completion event: "merged to main + CI green". | Whether `plan/` is created at all. The completion-event sentence in `CONVENTIONS.md` §Plan Folder, `plan/README.md`, and `AGENTS.md` §Plan folder. |
+| 5 | **Multi-agent setup** — single or many; LOCKS discipline yes/no. | **Single agent, skip LOCKS.** LOCKS earns its keep only with real parallel agents. | `_agent/ROLES.md` content (single `default-agent` row vs. multiple). `AGENTS.md` §Multi-agent workflow. `_agent/LOCKS.md` may be skipped entirely for a single agent. |
+| 6 | **Git contract** — Conventional Commits, `Rationale:` footer, signed commits, ADR-revision tags, `Co-Authored-By` trailer. | **Conventional Commits ON, `Rationale:` footer ON, signed commits ON, ADR-revision tags OFF, `Co-Authored-By` trailer OFF.** | `AGENTS.md` §Git contract and `CONVENTIONS.md` §Git Contract bullets. |
+| 7 | **Optional artefacts** — `GLOSSARY.md`, `domains/`, technology-ADR template. | **Defer all three.** Add when scale demands (terminology drift, >20 ADRs, technology decisions splitting from product). | Whether those files / directories are created. |
+| 8 | **Verify gate** — what command(s) decide a change is shippable. | *No default — project-specific.* | Whether `_agent/prompts/autonomous.md` is written. The skill **refuses** to write the autonomous prompt without a real verify gate. The Step 4 line of the prompt is filled with your command. |
+| 9 | **Existing-content conflicts** (existing repos only) — current commit format, branch policy, ADR style, status names the new layout must respect. | *No default — project-specific.* Skipped on fresh repos. | Merge behaviour during writes; commit-message notes calling out each compromise. |
+| 10 | **Domain-specific hard rules** to enforce from day one — e.g. vendor-naming restriction, regulated-evidence posture (attribution, retention, e-signatures), language mandate, mandatory user-story personas, separated audit streams. | **None from day one.** Add later when a concrete requirement appears; pre-emptive hard rules accumulate as cruft. | Additional sections in `CONVENTIONS.md` and additional bullets in `AGENTS.md` §Hard rules. |
 
 ## 4. Output files
 
