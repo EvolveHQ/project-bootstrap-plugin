@@ -66,6 +66,25 @@ Examples:
 ## Mandatory user-story personas
 -->
 
+## ADR Privacy
+
+ADRs are internal artefacts. ADR numbers, ADR titles, and the
+existence of the ADR catalogue must never appear in any string the
+product emits to users: UI copy, API response bodies, error messages,
+customer-visible log lines, public documentation, release notes,
+marketing copy, or support communications.
+
+Allowed references:
+- Inline code comments tying a non-obvious choice to its ADR
+  (`// see adr/0042-foo.md`).
+- Commit messages and PR descriptions.
+- Internal documents: `AGENTS.md`, `INDEX.md`, the `plan/` queue,
+  `_agent/` files, internal runbooks.
+
+Rule of thumb: if a non-builder could ever read the string, the ADR
+reference comes out. Refer to the behaviour by its product-level name
+instead.
+
 ## Multi-Agent Rules
 
 <!-- Single agent: drop this section, or leave a one-liner. -->

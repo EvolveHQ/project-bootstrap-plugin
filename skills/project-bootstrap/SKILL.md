@@ -100,6 +100,17 @@ questions.
     asks for one.
 11. **AGENTS.md is the hard-rules entry point;** **CLAUDE.md** is the
     one-liner `@AGENTS.md` so the Claude Code CLI picks it up.
+12. **ADRs are internal artefacts — never user-visible.** ADR numbers,
+    ADR titles, and the existence of the ADR catalogue must NEVER
+    appear in product code paths that reach a user: UI strings, API
+    response bodies, error messages, log lines emitted to customers,
+    public documentation, release notes, marketing copy, or support
+    communications. ADRs are for builders, not users. References ARE
+    allowed in: code comments (`// see adr/0042-foo.md`), commit
+    messages, PR descriptions, internal docs, `AGENTS.md`,
+    `CONVENTIONS.md`, `INDEX.md`, and the `plan/` queue. When in
+    doubt, ask whether a non-builder would ever see this string — if
+    yes, the ADR reference comes out.
 
 ## Step 4 — Assessment (10 questions)
 

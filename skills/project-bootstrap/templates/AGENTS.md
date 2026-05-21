@@ -38,6 +38,17 @@ These come from `CONVENTIONS.md` and override default behaviour:
   questions → References → Revision History → Approvals. Rationale must
   name alternatives considered with specific rejection reasons.
 - **Acceptance criteria are testable and numbered.**
+- **ADRs are internal artefacts — never user-visible.** ADR numbers,
+  ADR titles, and the existence of the ADR catalogue must NEVER appear
+  in any string the product emits to users: UI copy, API response
+  bodies, error messages, customer-visible log lines, public
+  documentation, release notes, marketing copy, or support
+  communications. The catalogue is a builder's tool, not a user-facing
+  surface. References ARE allowed in: code comments
+  (`// see adr/0042-foo.md`), commit messages, PR descriptions,
+  internal docs, `AGENTS.md`, `CONVENTIONS.md`, `INDEX.md`, and the
+  `plan/` queue. Rule of thumb: if a non-builder could ever see the
+  string, the ADR reference comes out.
 <!-- Insert any Q10 domain-specific hard rules here as additional bullets. -->
 
 ## Implementation work
@@ -48,6 +59,13 @@ These come from `CONVENTIONS.md` and override default behaviour:
   the relevant ADR rather than silently diverging.
 - Add or update tests for implemented behaviour. Map tests back to ADR
   acceptance criteria where practical.
+- **Do not leak ADR identifiers into user-visible surfaces.** When
+  writing error messages, UI copy, API responses, log lines that ship
+  to customers, public docs, or release notes, refer to the behaviour
+  by its product-level name — never by ADR number, ADR title, or
+  phrases like "per the ADR catalogue". The ADR link belongs in the
+  commit message and (optionally) an inline code comment, not in the
+  string the user reads.
 
 ## Audit trail and revision discipline
 
