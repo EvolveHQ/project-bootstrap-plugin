@@ -149,3 +149,17 @@ Commit messages follow Conventional Commits with a mandatory
 - ADR-revision tags `adr-NNNN-rN`: <yes/no>
 - Co-Authored-By trailer on agent commits: <yes/no>
 -->
+
+<!-- Integration model per Q4b — keep one paragraph.
+
+Direct-to-main:
+Changes are fast-forwarded onto `main`; no merge commits. The verify
+gate runs locally and must pass before push. A change is "shipped"
+when it is on `main` and pushed.
+
+PR-based:
+Every change ships via a pull request with required CI. The verify
+gate runs in CI on the PR. Merge strategy is <squash | merge |
+rebase>. A change is "shipped" when its PR is merged to `main` with
+CI green.
+-->

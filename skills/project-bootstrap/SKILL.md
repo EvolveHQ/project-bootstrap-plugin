@@ -140,11 +140,29 @@ lines and ask for sign-off before writing any files.
    (Superseded | Deprecated)`, or shorter (drop `Implemented`)?
    **Recommended: full lifecycle** — the `Implemented` rung is cheap
    and gives a clear "what's shipped" signal.
-4. **Plan folder.** Use `plan/todo/` + `plan/done/`, or skip it because
-   work is tracked elsewhere? If kept, what event counts as "shipped"?
+4. **Plan folder + integration model.** Two sub-answers. **Ask Q5
+   before Q4b — the integration recommendation depends on the
+   multi-agent mode chosen in Q5.** When asking sequentially, the
+   order is: Q1 → Q2 → Q3 → Q4a → Q5 → Q4b → Q6 → Q7 → Q8 → Q9 → Q10.
+
+   **Q4a — Plan folder.** Use `plan/todo/` + `plan/done/`, or skip it
+   because work is tracked elsewhere?
    **Recommended: use it** — the queue is what makes the convention
-   set actionable for agents; default completion event is "merged to
-   main + CI green".
+   set actionable for agents.
+
+   **Q4b — Integration model.** *Skip if Q4a = skip.* Two options:
+   - **Direct-to-main, fast-forward only.**
+     *Recommended if Q5 = mode 1 (single agent).* Local verify gate
+     runs before push. Completion event: "fast-forwarded to main +
+     remote push succeeded". Autonomous prompt uses
+     `git merge --ff-only`. Trunk-based development; no PRs.
+   - **PR-based, required CI green.**
+     *Recommended if Q5 = mode 2 or 3 (multi-agent).* Verify gate
+     runs in CI on the PR. Completion event: "PR merged to main + CI
+     green". Autonomous prompt opens a draft PR, waits for green,
+     marks ready, merges. Ask the user for merge strategy
+     (squash / merge / rebase — default: squash for clean history,
+     rebase if per-commit identity matters).
 5. **Multi-agent setup.** Pick one — the three options have different
    coordination-file shapes, and switching later is not free:
    - **(Recommended) Single agent.** `default-agent` in ROLES.
@@ -197,6 +215,24 @@ lines and ask for sign-off before writing any files.
     **Recommended: none from day one** — add later when a concrete
     requirement appears; pre-emptive hard rules accumulate as cruft.
 
+## Step 4.5 — Cross-check before sign-off
+
+After all answers are in, scan for contradictions before writing the
+plan summary. Surface each, take the correction, then proceed:
+
+- **Q5 mode 3 (worktrees) + Q4b direct-to-main.** Unusual: each
+  worktree would have to rebase onto main before fast-forwarding.
+  Ask the user to confirm or switch to PR-based — PR-based is the
+  near-universal fit for worktree work.
+- **Q4a plan-folder skipped + Q8 autonomous prompt expected.** The
+  autonomous prompt walks `plan/todo/`; with no plan folder it has
+  nothing to drive. Do not write the autonomous prompt.
+- **Q8 has no real verify gate + Q4b PR-based with required CI.**
+  "Required CI green" needs a CI gate. Confirm what the CI actually
+  runs, or downgrade the completion event.
+- **Q2 single ADR shape + Q7 technology-ADR template requested.**
+  Contradiction — pick one.
+
 ## Step 5 — Output sequence (after sign-off)
 
 Templates live in this skill's `templates/` directory. Read each
@@ -232,7 +268,10 @@ write it into the repo.
 12. Stub `INDEX.md` — header + empty table.
 13. `_agent/prompts/autonomous.md` — from
     `templates/_agent-prompts-autonomous.md`, **only** if Q8 confirmed a
-    verify gate.
+    verify gate. Keep the integration block matching Q4b: the
+    **direct-to-main** variant (`git merge --ff-only` then push) or
+    the **PR-based** variant (`gh pr create --draft` → wait for CI →
+    mark ready → `gh pr merge`). Drop the unused variant.
 
 Commit each file (or logical group) with a Conventional Commit message;
 no `Co-Authored-By` trailer unless Q6 asked for one.

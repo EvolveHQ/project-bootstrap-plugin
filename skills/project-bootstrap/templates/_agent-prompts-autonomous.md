@@ -40,22 +40,52 @@ cause, re-run. Do not bypass with `--no-verify` or equivalent.
 Conventional Commits per `AGENTS.md` §Git contract. `Rationale:`
 footer required on any commit touching an ADR.
 
-## Step 6 — Ship the queue item
+## Step 6 — Integrate
 
-When every sub-increment of the queue item has shipped:
+<!-- Integration model per Q4b — keep ONE of the two blocks below,
+delete the other. -->
+
+<!-- Direct-to-main (fast-forward only). Keep this block for mode 1 /
+direct-to-main projects:
+
+- Fast-forward the work branch onto `main`:
+  `git merge --ff-only <work-branch>` (or commit directly on `main`
+  if that is the project's flow).
+- Push: `git push origin main`.
+- The verify gate has already passed locally (Step 4); no CI wait.
+-->
+
+<!-- PR-based (required CI green). Keep this block for mode 2/3 /
+PR-based projects:
+
+- Push the work branch: `git push -u origin <work-branch>`.
+- Open a draft PR: `gh pr create --draft --fill`.
+- Wait for CI: `gh pr checks --watch`. The verify gate runs in CI;
+  do not proceed until it is green.
+- Mark ready: `gh pr ready`.
+- Merge with the project's strategy:
+  `gh pr merge --squash --auto` (or `--merge` / `--rebase`).
+- Confirm the merge landed on `main` before treating the item as
+  shipped.
+-->
+
+## Step 7 — Ship the queue item
+
+Once the change is on `main` (fast-forwarded or PR-merged):
 
 - `git mv plan/todo/NNNN-<slug>.md plan/done/<YYYY-MM-DD>-<slug>.md`.
 - Amend the moved file with a "Shipped at HEAD `<sha>`" footer (and
-  any artefact id, image tag, deploy id).
+  any artefact id, image tag, deploy id, PR link).
 - Advance the owning ADR(s)' `status:` from `Accepted` to
   `Implemented`; regenerate `INDEX.md`.
 
-## Step 7 — Record
+## Step 8 — Record
 
 - Append a one-line `_agent/WORKLOG.md` entry naming the branch, the
   HEAD, the verify result, any deferral.
 - Update `_agent/CURRENT_FOCUS.md` so the slim live snapshot reads
-  the new state.
+  the new state. (In worktree mode this file is local-only; update
+  `_agent/IN_FLIGHT.md` to remove your worktree's row instead.)
 
 ## Stop conditions
 

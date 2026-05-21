@@ -107,7 +107,7 @@ recommendation and what it changes up front helps you answer quickly.
 | 1 | **Project identity** — name, one-liner, doc language, existing files to preserve. | *No default — project-specific.* | Header of `AGENTS.md`, `CONVENTIONS.md`, `README.md`; language mandate (if any) added to `CONVENTIONS.md` §Project. |
 | 2 | **ADR shape** — single vs. capability-vs-technology split. | **Single shape.** Start simple; split later if long-lived product requirements clearly outlive their implementations. | Whether `adr/NNNN-template.md` (technology) is created in addition to `adr/0000-template.md`. Section-order rules in `CONVENTIONS.md` §ADR Shapes and `AGENTS.md` §Hard rules. |
 | 3 | **Status lifecycle** — full or shorter. | **Full lifecycle.** The `Implemented` rung is cheap and gives a clear "what's shipped" signal. | Status table in `CONVENTIONS.md` §ADR Files and `plan/README.md` §Status semantics. Whether the `Implemented` rung exists at all. |
-| 4 | **Plan folder** — use it or skip; if used, what is the "shipped" event. | **Use it.** The queue makes the convention set actionable for agents. Default completion event: "merged to main + CI green". | Whether `plan/` is created at all. The completion-event sentence in `CONVENTIONS.md` §Plan Folder, `plan/README.md`, and `AGENTS.md` §Plan folder. |
+| 4 | **Plan folder + integration model.** Q4a: use `plan/todo/` + `plan/done/` or skip. Q4b: how work reaches `main` — **direct-to-main (fast-forward)** or **PR-based (required CI green)**. Asked after Q5, because the Q4b recommendation depends on the multi-agent mode. | **Q4a: use it.** **Q4b: direct-to-main if Q5 = single agent; PR-based if Q5 = multi-agent.** | Whether `plan/` is created. The completion-event sentence in `CONVENTIONS.md` §Plan Folder, `plan/README.md`, `AGENTS.md` §Plan folder. The integration block in `AGENTS.md` / `CONVENTIONS.md` §Git contract. Which variant of `_agent/prompts/autonomous.md` Step 6 is kept (`git merge --ff-only` vs. `gh pr create` → CI → merge). |
 | 5 | **Multi-agent setup** — pick one of three: (1) single agent; (2) multi-agent, shared checkout; (3) multi-agent, separate worktrees / PR branches. The three options differ in LOCKS semantics, WORKLOG layout, and CURRENT_FOCUS handling — switching later is not free. | **Single agent.** Small projects shouldn't pay the coordination cost. | `_agent/ROLES.md` content. `AGENTS.md` §Multi-agent workflow and `CONVENTIONS.md` §Multi-Agent Rules pick one of three variants. Mode 2 turns LOCKS on as a filesystem mutex. Mode 3 sets LOCKS to advisory, adds `_agent/WORKLOG.md merge=union` to `.gitattributes`, gitignores `_agent/CURRENT_FOCUS.md`, and writes `_agent/IN_FLIGHT.md` as the committed cross-worktree dashboard. |
 | 6 | **Git contract** — Conventional Commits, `Rationale:` footer, signed commits, ADR-revision tags, `Co-Authored-By` trailer. | **Conventional Commits ON, `Rationale:` footer ON, signed commits ON, ADR-revision tags OFF, `Co-Authored-By` trailer OFF.** | `AGENTS.md` §Git contract and `CONVENTIONS.md` §Git Contract bullets. |
 | 7 | **Optional artefacts** — `GLOSSARY.md`, `domains/`, technology-ADR template. | **Defer all three.** Add when scale demands (terminology drift, >20 ADRs, technology decisions splitting from product). | Whether those files / directories are created. |
@@ -151,7 +151,10 @@ The repo is now ready for ADR-driven work. Typical first steps:
    owning ADR, scope, exit criteria. Lower-numbered files run first.
 4. **Implement.** Code against the ADR's numbered acceptance criteria.
    Add tests that map back to those criteria.
-5. **Ship.** When the project's completion event fires (per Q4):
+5. **Integrate.** Per the Q4b integration model: fast-forward to
+   `main` and push (direct-to-main), or open a PR, wait for CI green,
+   and merge (PR-based).
+6. **Ship.** Once on `main`:
    `git mv plan/todo/0001-<slug>.md plan/done/<YYYY-MM-DD>-<slug>.md`,
    amend the file with a "Shipped at HEAD `<sha>`" footer, advance the
    ADR's `status:` from `Accepted` to `Implemented`, regenerate

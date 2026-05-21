@@ -137,3 +137,21 @@ Coordination rules:
 - <ADR-revision tags `adr-NNNN-rN`: yes/no per Q6.>
 - <Co-Authored-By trailer: yes/no per Q6 — default no.>
 - Cross-references between ADRs use relative paths (`adr/NNNN-*.md`).
+
+<!-- Integration model per Q4b — keep one block. -->
+
+<!-- Direct-to-main:
+- **Integration:** direct-to-main, **fast-forward only**. No merge
+  commits on `main`. The verify gate (`<command from Q8>`) runs
+  locally and must pass before push. Completion event:
+  fast-forwarded to `main` + remote push succeeded.
+-->
+
+<!-- PR-based:
+- **Integration:** every change ships via a pull request. CI must be
+  green before merge — the verify gate (`<command from Q8>`) runs in
+  CI on the PR, not (only) locally. Merge strategy:
+  <squash | merge | rebase>. Completion event: PR merged to `main`
+  with CI green.
+-->
+
