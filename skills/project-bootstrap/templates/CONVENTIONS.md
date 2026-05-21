@@ -87,11 +87,30 @@ instead.
 
 ## Multi-Agent Rules
 
-<!-- Single agent: drop this section, or leave a one-liner. -->
-<!-- Multi-agent:
-Claim a file in `_agent/LOCKS.md` before editing. Append to
-`_agent/WORKLOG.md` on commit. Regenerate `INDEX.md` after any ADR
-status change or new ADR.
+<!-- Mode 1 — single agent. Keep this line, drop the alternatives. -->
+A single agent owns this repo. The `_agent/` directory tracks live
+state and history; no LOCKS discipline.
+
+<!-- Mode 2 — multi-agent, shared checkout. Replace with:
+Work is partitioned across named agents (see `_agent/ROLES.md`).
+Claim a file in `_agent/LOCKS.md` before editing; remove the line on
+commit. Append to `_agent/WORKLOG.md` on commit.
+`_agent/CURRENT_FOCUS.md` is the single in-flight snapshot.
+Regenerate `INDEX.md` after any ADR status change or new ADR.
+-->
+
+<!-- Mode 3 — multi-agent, separate worktrees / PR branches. Replace
+with:
+Work is partitioned across named agents (see `_agent/ROLES.md`).
+Each agent works in its own worktree / PR branch.
+- GitHub draft PRs are the authoritative lock; `_agent/LOCKS.md` is
+  advisory only.
+- `_agent/WORKLOG.md` is `merge=union` (see `.gitattributes`);
+  append on every commit.
+- `_agent/CURRENT_FOCUS.md` is gitignored (local-only per worktree);
+  the committed cross-worktree dashboard is `_agent/IN_FLIGHT.md` —
+  one row per active worktree.
+- Regenerate `INDEX.md` after any ADR status change or new ADR.
 -->
 
 ## Plan Folder

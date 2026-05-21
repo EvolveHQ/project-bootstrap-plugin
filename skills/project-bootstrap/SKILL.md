@@ -145,11 +145,30 @@ lines and ask for sign-off before writing any files.
    **Recommended: use it** — the queue is what makes the convention
    set actionable for agents; default completion event is "merged to
    main + CI green".
-5. **Multi-agent setup.** Single agent or many? If many, rough domain
-   partition (or `default-agent` placeholder). Use the `LOCKS.md`
-   file-claim discipline? **Recommended: single agent, skip LOCKS** —
-   LOCKS earns its keep only with real parallel agents; pure overhead
-   otherwise.
+5. **Multi-agent setup.** Pick one — the three options have different
+   coordination-file shapes, and switching later is not free:
+   - **(Recommended) Single agent.** `default-agent` in ROLES.
+     LOCKS skipped. WORKLOG / CURRENT_FOCUS as standard single-file
+     snapshots. Right for small projects and the "one human + one
+     agent" case.
+   - **Multi-agent, shared checkout.** Named agents in ROLES. LOCKS
+     ON as a filesystem mutex (prevents simultaneous writes to the
+     same file). WORKLOG append-on-commit, single file.
+     CURRENT_FOCUS as the single in-flight snapshot. Right when
+     several agents serialise through one working tree.
+   - **Multi-agent, separate worktrees / PR branches.** Named agents
+     in ROLES. LOCKS *advisory only* — GitHub draft PRs / branch
+     assignment are the real lock; pick one signal, not two.
+     `_agent/WORKLOG.md` gets `merge=union` via `.gitattributes` so
+     concurrent appends concatenate instead of conflicting (or split
+     to `_agent/worklog/<agent-id>.md` if agent set is fixed).
+     `_agent/CURRENT_FOCUS.md` becomes local-only (added to
+     `.gitignore`); a committed `_agent/IN_FLIGHT.md` dashboard
+     aggregates per-worktree state.
+
+   Note: option 2 → option 3 is not a free upgrade later; it means
+   splitting WORKLOG (or adding the merge driver) and rethinking
+   CURRENT_FOCUS. Choose deliberately.
 6. **Git contract.** Confirm or override each — Conventional Commits;
    mandatory `Rationale:` footer on ADR-touching commits; signed
    commits; ADR-revision tags `adr-NNNN-rN`; whether agent commits
@@ -194,10 +213,21 @@ write it into the repo.
    (project-defined, e.g. 0091; default 0100 if unspecified).
 6. `plan/README.md` — from `templates/plan-README.md`. Create empty
    `plan/todo/.gitkeep` and `plan/done/.gitkeep`.
-7. `_agent/ROLES.md` — from `templates/_agent-ROLES.md`.
-8. `_agent/LOCKS.md` — from `templates/_agent-LOCKS.md`.
-9. `_agent/WORKLOG.md` — from `templates/_agent-WORKLOG.md`.
-10. `_agent/CURRENT_FOCUS.md` — from `templates/_agent-CURRENT_FOCUS.md`.
+7. `_agent/ROLES.md` — from `templates/_agent-ROLES.md`. Mode 1
+   keeps the `default-agent` block; modes 2 and 3 expand to named
+   agents per Q5.
+8. `_agent/LOCKS.md` — from `templates/_agent-LOCKS.md`. **Skip in
+   mode 1.** **Mode 3** writes it with an advisory header noting
+   PRs are the authoritative lock.
+9. `_agent/WORKLOG.md` — from `templates/_agent-WORKLOG.md`. In
+   **mode 3**, also write a `.gitattributes` entry:
+   `_agent/WORKLOG.md merge=union`.
+10. `_agent/CURRENT_FOCUS.md` — from
+    `templates/_agent-CURRENT_FOCUS.md`. In **mode 3**, add
+    `_agent/CURRENT_FOCUS.md` to `.gitignore` (the file stays
+    local-only per worktree) and write
+    `_agent/IN_FLIGHT.md` from `templates/_agent-IN_FLIGHT.md` as
+    the committed cross-worktree dashboard.
 11. `_agent/HANDOFF.md` — from `templates/_agent-HANDOFF.md`.
 12. Stub `INDEX.md` — header + empty table.
 13. `_agent/prompts/autonomous.md` — from

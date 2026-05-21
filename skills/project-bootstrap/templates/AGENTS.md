@@ -79,17 +79,43 @@ These come from `CONVENTIONS.md` and override default behaviour:
 
 ## Multi-agent workflow
 
-<!-- Single agent (Q5): -->
+<!-- Mode 1 — single agent (Q5 default). Keep this block. -->
 A single agent owns this repo. The `_agent/` directory tracks live
-state and history; LOCKS discipline is optional.
+state and history; LOCKS discipline is not in use.
 
-<!-- Multi-agent (Q5): -->
+<!-- Mode 2 — multi-agent, shared checkout. Replace the block above with: -->
 <!--
-Work is partitioned across named agents (see `_agent/ROLES.md`). Before
-editing a file, claim it in `_agent/LOCKS.md` by appending
-`<agent-id> | <path> | <ISO-8601 timestamp>`, and remove the line on
-commit. Append to `_agent/WORKLOG.md` on commit. Check
-`_agent/CURRENT_FOCUS.md` for the active phase.
+Work is partitioned across named agents (see `_agent/ROLES.md`).
+Coordination rules:
+- Before editing a file, claim it in `_agent/LOCKS.md` by appending
+  `<agent-id> | <path> | <ISO-8601 timestamp>`. Remove the line on
+  commit. LOCKS is a filesystem mutex — it prevents simultaneous
+  writes to the same file.
+- Append a one-line entry to `_agent/WORKLOG.md` on every commit.
+- `_agent/CURRENT_FOCUS.md` is the single in-flight snapshot
+  (branch, active queue item, blockers, uncommitted work). Update it
+  when state changes.
+-->
+
+<!-- Mode 3 — multi-agent, separate worktrees / PR branches. Replace
+the block above with: -->
+<!--
+Work is partitioned across named agents (see `_agent/ROLES.md`).
+Each agent works in its own git worktree or PR branch.
+Coordination rules:
+- **GitHub draft PRs / branch assignment are the authoritative lock.**
+  `_agent/LOCKS.md` is advisory only — append an intent declaration
+  if it helps coordinate before a PR exists; do not rely on it as a
+  mutex. The filesystem can't conflict across worktrees, but
+  duplicated work and contradictory merges still can.
+- Append a one-line entry to `_agent/WORKLOG.md` on every commit.
+  The repo's `.gitattributes` sets `_agent/WORKLOG.md merge=union`
+  so concurrent appends concatenate instead of conflicting.
+- `_agent/CURRENT_FOCUS.md` is local-only per worktree (gitignored).
+  Update it freely; it never merges.
+- The committed cross-worktree dashboard is `_agent/IN_FLIGHT.md` —
+  one row per active worktree (agent, branch, queue item, started).
+  Add your row when you start, remove it when the worktree closes.
 -->
 
 ## Plan folder
