@@ -1,6 +1,6 @@
 {
   "name": "@evolvehq/docflow",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "ADR-driven documentation workflow: scaffold an Architecture Decision Record (ADR) catalogue, a plan/ queue, and AGENTS.md conventions into any repo, then author, queue, ship, and audit ADRs with lifecycle skills. Works with the pi coding agent and Claude Code.",
   "keywords": [
     "pi-package",
@@ -16,6 +16,15 @@
     "url": "git+https://github.com/EvolveHQ/docflow.git"
   },
   "homepage": "https://github.com/EvolveHQ/docflow",
+  "files": [
+    "skills/",
+    "README.md",
+    "USAGE.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "pi": {
     "skills": ["./skills"]
   }
