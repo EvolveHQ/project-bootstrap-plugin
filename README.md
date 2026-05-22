@@ -1,7 +1,8 @@
 # docflow
 
-A Claude Code plugin for **ADR-driven, documentation-led projects**. It
-installs a `bootstrap` skill that scaffolds (or retrofits) an
+A plugin for **ADR-driven, documentation-led projects**, working on both
+the **pi** and **Claude Code** coding agents from the same skill files.
+It installs a `bootstrap` skill that scaffolds (or retrofits) an
 **Architecture Decision Record (ADR)** catalogue, a plan queue, and
 `AGENTS.md` conventions into any repository, plus a set of **lifecycle
 skills** that author, queue, ship, and audit ADRs — so the project can
