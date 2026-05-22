@@ -160,6 +160,40 @@ The repo is now ready for ADR-driven work. Typical first steps:
    ADR's `status:` from `Accepted` to `Implemented`, regenerate
    `INDEX.md`, append a row to `_agent/WORKLOG.md`.
 
+## 5a. Lifecycle skills
+
+The manual workflow in §5 is exactly what the lifecycle skills
+automate. They all share three properties: they **read `CONVENTIONS.md`
+first** and honour the repo's recorded choices (ADR shape, status
+lifecycle, integration model, multi-agent mode); they **refuse on an
+un-bootstrapped repo** and point at `/project-bootstrap`; and they keep
+`INDEX.md` and the `_agent/` coordination files in sync as a side
+effect.
+
+| Skill | Replaces these manual steps |
+|-------|------------------------------|
+| `/new-adr` | §5 steps 1–2: pick number, choose shape, fill template, set `Proposed`, regen INDEX, wire domain README, supersede linkage. Offers to walk to `Accepted` and to create the plan item. |
+| `/new-plan` | §5 step 3: create `plan/todo/NNNN`, name owning ADR(s), scope, exit criteria, dependencies, queue position. |
+| `/ship-item` | §5 steps 5–6: verify gate → integrate (ff or PR per Q4b) → `git mv` todo→done with footer → ADR `Accepted`→`Implemented` → regen INDEX → WORKLOG → live snapshot. The most order-sensitive operation; let the skill do it. |
+| `/add-convention` | Assesses whether a convention is worth codifying (triages out one-offs, duplicates, churn-prone, vague), routes it to AGENTS.md / CONVENTIONS.md / GLOSSARY / an ADR, then writes it. |
+| `/audit` | Lints the repo against its own conventions and reports a punch list — numbering, INDEX sync, plan coverage, section completeness, status validity, cross-refs, language mandate, and **ADR-privacy leaks into user-visible code**. Offers to fix the mechanical issues. |
+| `/brainstorm` | Decomposes a problem into candidate ADRs + plan items with dependency edges and ordering. Proposes drafts only; writes nothing until approved, then hands off to `/new-adr` and `/new-plan`. |
+| `/agent-wave` | Orchestrates parallel worktree subagents over the queue. Asks wave width, budget (items/waves; hours as a soft cap), and supervision (checkpoint vs. continuous). Requires multi-agent mode; refuses mode 1. |
+
+### agent-wave: what it can and can't do
+
+In-session subagents are bounded by the session, not by wall-clock
+hours. `/agent-wave` therefore measures budget in **items and waves**,
+with hours as a *soft cap*. For a genuinely long-running, session-
+outliving fleet, schedule `_agent/prompts/autonomous.md` via
+`/schedule` (or use remote agents) instead — `/agent-wave` points you
+there rather than over-promising.
+
+It requires a multi-agent mode (Q5 mode 2 or 3) and works best in mode
+3 (separate worktrees), where each subagent gets an isolated checkout.
+Continuous-unsupervised runs are recommended only with PR-based
+integration, so CI gates each merge.
+
 ## 6. Customising or extending
 
 The templates are deliberately small and self-contained. To customise:
@@ -170,9 +204,17 @@ The templates are deliberately small and self-contained. To customise:
   reflects it.
 - **Add a new template.** Put it in `templates/` and reference it from
   `SKILL.md` §Step 5 (Output sequence).
-- **Tighten the skill's auto-trigger.** Edit the `description:`
-  frontmatter in `SKILL.md`. Skills match user requests against this
-  string — be specific about phrasings, be terse about scope.
+- **Tighten a skill's auto-trigger.** Edit the `description:`
+  frontmatter in that skill's `SKILL.md`. Skills match user requests
+  against this string — be specific about phrasings, be terse about
+  scope. With several skills in one plugin, watch for trigger collision
+  (e.g. "add a convention" vs. "add an ADR") and keep descriptions
+  distinct; the slash commands are the unambiguous entry point.
+- **Add a new lifecycle skill.** Create `skills/<name>/SKILL.md`. Follow
+  the shared pattern: a Step 0 that checks the repo is bootstrapped and
+  reads `CONVENTIONS.md`, then act in a way that honours the recorded
+  choices. Reuse the templates under
+  `skills/project-bootstrap/templates/` rather than duplicating them.
 - **Fork the plugin.** This repo is small enough to fork and host
   internally if you want a private convention set.
 

@@ -1,11 +1,30 @@
 # project-bootstrap
 
-A Claude Code plugin that installs a `project-bootstrap` skill. The skill
-scaffolds — or retrofits — a documentation-led convention set into any
-repository, so the project can be driven by both humans and coding
-agents from a small set of canonical files.
+A Claude Code plugin for **documentation-led projects**. It installs a
+`project-bootstrap` skill that scaffolds (or retrofits) a convention set
+into any repository, plus a set of **lifecycle skills** that operate on
+an already-bootstrapped repo — so the project can be driven by both
+humans and coding agents from a small set of canonical files.
 
-## What it installs
+## Skills
+
+| Skill | Slash command | Purpose |
+|-------|---------------|---------|
+| project-bootstrap | `/project-bootstrap` | Scaffold or retrofit the whole convention set. Start here. |
+| new-adr | `/new-adr` | Author one ADR — next contiguous number, right shape, INDEX + domain wiring, supersede linkage. |
+| new-plan | `/new-plan` | Add a `plan/todo` item tracing to its owning ADR(s). |
+| ship-item | `/ship-item` | Run the completion event: verify → integrate → `todo`→`done` → ADR `Accepted`→`Implemented` → INDEX/WORKLOG. |
+| add-convention | `/add-convention` | Assess whether a convention is worth codifying, route it to the right home (or to an ADR), then add it. |
+| audit | `/audit` | Lint the repo against its own conventions — numbering, INDEX sync, plan coverage, **ADR-privacy leaks**, more. |
+| brainstorm | `/brainstorm` | Decompose a problem into candidate ADRs + plan items (proposes drafts; writes nothing until approved). |
+| agent-wave | `/agent-wave` | Orchestrate a wave of parallel worktree subagents over the queue, with checkpoint or continuous supervision. |
+
+The lifecycle skills all **read `CONVENTIONS.md` first** and honour the
+choices the bootstrap recorded (ADR shape, status lifecycle, integration
+model, multi-agent mode). They refuse to run on an un-bootstrapped repo
+and point you at `/project-bootstrap`.
+
+## What `/project-bootstrap` installs
 
 - `AGENTS.md` — hard rules for coding agents (the entry point).
 - `CLAUDE.md` — one-liner re-exporting `AGENTS.md` so Claude Code picks
@@ -113,11 +132,21 @@ project-bootstrap-plugin/
     marketplace.json     # marketplace listing (this repo is its own marketplace)
   skills/
     project-bootstrap/
-      SKILL.md           # the skill body — assessment + output sequence
-      templates/         # files the skill reads and writes into target repos
+      SKILL.md           # bootstrap: assessment + output sequence + backfill
+      templates/         # files the bootstrap reads and writes into target repos
+    new-adr/SKILL.md     # lifecycle skills — operate on a bootstrapped repo,
+    new-plan/SKILL.md    #   read CONVENTIONS.md, honour its choices
+    ship-item/SKILL.md
+    add-convention/SKILL.md
+    audit/SKILL.md
+    brainstorm/SKILL.md
+    agent-wave/SKILL.md
   README.md
   USAGE.md
 ```
+
+The lifecycle skills reuse the templates under
+`skills/project-bootstrap/templates/` rather than duplicating them.
 
 ## License
 

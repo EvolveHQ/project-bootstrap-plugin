@@ -1,7 +1,7 @@
 {
   "name": "project-bootstrap",
-  "description": "Scaffold or retrofit documentation-led conventions (AGENTS.md, ADR catalogue, plan/ queue, _agent/ coordination) into a repo.",
-  "version": "0.1.0",
+  "description": "Documentation-led project conventions for Claude Code: a bootstrap skill that scaffolds AGENTS.md, an ADR catalogue, a plan/ queue, and _agent/ coordination — plus lifecycle skills to author ADRs, queue and ship work, add conventions, audit consistency, brainstorm decisions, and run agent waves.",
+  "version": "0.2.0",
   "author": {
     "name": "Eugenio Minardi",
     "email": "eugenio.minardi@evolvehq.io"
