@@ -11,7 +11,7 @@ Author one new ADR, consistent with this repo's conventions.
 
 1. Confirm the repo is bootstrapped: `AGENTS.md`, `CONVENTIONS.md`, and
    an `adr/` directory with at least `adr/0000-template.md` must exist.
-   If not, stop and offer to run `/project-bootstrap` first.
+   If not, stop and offer to run `/bootstrap` first.
 2. Read `CONVENTIONS.md` to learn this repo's choices: ADR shape
    (single vs. capability/technology split and the cutoff number),
    status lifecycle, language mandate (if any), whether `domains/`

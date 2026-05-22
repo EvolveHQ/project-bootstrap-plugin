@@ -21,7 +21,7 @@ you there rather than pretending to be it.
 
 1. Confirm the repo is bootstrapped with a `plan/` queue and that
    `_agent/prompts/autonomous.md` exists (a real verify gate is
-   required — see `/project-bootstrap` Q8).
+   required — see `/bootstrap` Q8).
 2. Read `CONVENTIONS.md` for the **multi-agent mode** and **integration
    model**.
    - **Mode 1 (single agent):** refuse. Parallel agents in one checkout

@@ -1,16 +1,16 @@
-# project-bootstrap
+# docflow
 
 A Claude Code plugin for **documentation-led projects**. It installs a
-`project-bootstrap` skill that scaffolds (or retrofits) a convention set
-into any repository, plus a set of **lifecycle skills** that operate on
-an already-bootstrapped repo — so the project can be driven by both
-humans and coding agents from a small set of canonical files.
+`bootstrap` skill that scaffolds (or retrofits) a convention set into any
+repository, plus a set of **lifecycle skills** that operate on an
+already-bootstrapped repo — so the project can be driven by both humans
+and coding agents from a small set of canonical files.
 
 ## Skills
 
 | Skill | Slash command | Purpose |
 |-------|---------------|---------|
-| project-bootstrap | `/project-bootstrap` | Scaffold or retrofit the whole convention set. Start here. |
+| bootstrap | `/bootstrap` | Scaffold or retrofit the whole convention set. Start here. |
 | new-adr | `/new-adr` | Author one ADR — next contiguous number, right shape, INDEX + domain wiring, supersede linkage. |
 | new-plan | `/new-plan` | Add a `plan/todo` item tracing to its owning ADR(s). |
 | ship-item | `/ship-item` | Run the completion event: verify → integrate → `todo`→`done` → ADR `Accepted`→`Implemented` → INDEX/WORKLOG. |
@@ -22,9 +22,9 @@ humans and coding agents from a small set of canonical files.
 The lifecycle skills all **read `CONVENTIONS.md` first** and honour the
 choices the bootstrap recorded (ADR shape, status lifecycle, integration
 model, multi-agent mode). They refuse to run on an un-bootstrapped repo
-and point you at `/project-bootstrap`.
+and point you at `/bootstrap`.
 
-## What `/project-bootstrap` installs
+## What `/bootstrap` installs
 
 - `AGENTS.md` — hard rules for coding agents (the entry point).
 - `CLAUDE.md` — one-liner re-exporting `AGENTS.md` so Claude Code picks
@@ -60,8 +60,8 @@ rather than overwriting them).
 ### From this marketplace
 
 ```
-/plugin marketplace add EvolveHQ/project-bootstrap-plugin
-/plugin install project-bootstrap@evolvehq
+/plugin marketplace add EvolveHQ/docflow
+/plugin install docflow@evolvehq
 ```
 
 ### Local development (no install)
@@ -73,19 +73,19 @@ claude --plugin-dir <path-to-this-repo>
 ### Direct skill clone (no plugin lifecycle)
 
 ```
-git clone https://github.com/EvolveHQ/project-bootstrap-plugin ~/.claude/skills/project-bootstrap-src
-ln -s ~/.claude/skills/project-bootstrap-src/skills/project-bootstrap ~/.claude/skills/project-bootstrap
+git clone https://github.com/EvolveHQ/docflow ~/.claude/skills/docflow-src
+ln -s ~/.claude/skills/docflow-src/skills/bootstrap ~/.claude/skills/bootstrap
 ```
 
-On Windows, copy `skills/project-bootstrap/` into
-`%USERPROFILE%\.claude\skills\` instead of symlinking.
+On Windows, copy `skills/bootstrap/` (and the other `skills/*` dirs you
+want) into `%USERPROFILE%\.claude\skills\` instead of symlinking.
 
 ## Quick start
 
 In any repo, run:
 
 ```
-/project-bootstrap
+/bootstrap
 ```
 
 or just say *"set up documentation-led conventions in this repo"*,
@@ -110,7 +110,7 @@ Recipients refresh installations with:
 
 ```
 /plugin marketplace update evolvehq
-/plugin install project-bootstrap@evolvehq
+/plugin install docflow@evolvehq
 ```
 
 See [USAGE.md §Updating the plugin](USAGE.md#8-updating-the-plugin)
@@ -126,12 +126,12 @@ to extend or override the templates.
 ## Layout
 
 ```
-project-bootstrap-plugin/
+docflow/
   .claude-plugin/
     plugin.json          # plugin manifest
     marketplace.json     # marketplace listing (this repo is its own marketplace)
   skills/
-    project-bootstrap/
+    bootstrap/
       SKILL.md           # bootstrap: assessment + output sequence + backfill
       templates/         # files the bootstrap reads and writes into target repos
     new-adr/SKILL.md     # lifecycle skills — operate on a bootstrapped repo,
@@ -145,8 +145,10 @@ project-bootstrap-plugin/
   USAGE.md
 ```
 
-The lifecycle skills reuse the templates under
-`skills/project-bootstrap/templates/` rather than duplicating them.
+Only the `bootstrap` skill uses `skills/bootstrap/templates/`. The
+lifecycle skills act on the copies the bootstrap wrote into the target
+repo (e.g. its `adr/0000-template.md`), so they carry no templates of
+their own.
 
 ## License
 

@@ -1,24 +1,25 @@
-# Using project-bootstrap
+# Using docflow
 
-This document explains how the skill behaves end-to-end, what each of
-the 10 assessment questions actually changes in the output, and how to
-customise or extend the templates.
+This document explains how the `bootstrap` skill behaves end-to-end,
+what each of the 10 assessment questions actually changes in the
+output, and how to customise or extend the templates. The lifecycle
+skills are covered in §5a.
 
 For installation, see the [README](README.md).
 
-## 1. Triggering the skill
+## 1. Triggering the bootstrap skill
 
 Once the plugin is installed (or `--plugin-dir`'d) into a Claude Code
 session, the skill is available in any repo. Three ways to trigger:
 
-1. **Slash command:** `/project-bootstrap`.
+1. **Slash command:** `/bootstrap`.
 2. **Natural language** matching the skill's description, e.g.
    - "set up documentation-led conventions in this repo"
    - "bootstrap ADRs and a plan queue"
    - "scaffold AGENTS.md and the _agent/ layout"
    - "retrofit this existing repo with the documentation conventions"
 3. **From another agent's prompt** — name the skill explicitly:
-   *"invoke the `project-bootstrap` skill on this repository."*
+   *"invoke the `bootstrap` skill on this repository."*
 
 ## 2. The flow
 
@@ -166,7 +167,7 @@ The manual workflow in §5 is exactly what the lifecycle skills
 automate. They all share three properties: they **read `CONVENTIONS.md`
 first** and honour the repo's recorded choices (ADR shape, status
 lifecycle, integration model, multi-agent mode); they **refuse on an
-un-bootstrapped repo** and point at `/project-bootstrap`; and they keep
+un-bootstrapped repo** and point at `/bootstrap`; and they keep
 `INDEX.md` and the `_agent/` coordination files in sync as a side
 effect.
 
@@ -198,12 +199,12 @@ integration, so CI gates each merge.
 
 The templates are deliberately small and self-contained. To customise:
 
-- **Edit a template.** Files in `skills/project-bootstrap/templates/`
-  are read verbatim by the skill, then placeholders are filled from
+- **Edit a template.** Files in `skills/bootstrap/templates/` are read
+  verbatim by the `bootstrap` skill, then placeholders are filled from
   the assessment answers. Change the template, the next bootstrap
   reflects it.
-- **Add a new template.** Put it in `templates/` and reference it from
-  `SKILL.md` §Step 5 (Output sequence).
+- **Add a new template.** Put it in `skills/bootstrap/templates/` and
+  reference it from `bootstrap/SKILL.md` §Step 5 (Output sequence).
 - **Tighten a skill's auto-trigger.** Edit the `description:`
   frontmatter in that skill's `SKILL.md`. Skills match user requests
   against this string — be specific about phrasings, be terse about
@@ -213,8 +214,8 @@ The templates are deliberately small and self-contained. To customise:
 - **Add a new lifecycle skill.** Create `skills/<name>/SKILL.md`. Follow
   the shared pattern: a Step 0 that checks the repo is bootstrapped and
   reads `CONVENTIONS.md`, then act in a way that honours the recorded
-  choices. Reuse the templates under
-  `skills/project-bootstrap/templates/` rather than duplicating them.
+  choices. Lifecycle skills act on the target repo's own files (e.g. its
+  `adr/0000-template.md`), so they need no templates of their own.
 - **Fork the plugin.** This repo is small enough to fork and host
   internally if you want a private convention set.
 
@@ -233,7 +234,7 @@ When the plugin author pushes changes, refresh your installation:
 
 ```
 /plugin marketplace update evolvehq
-/plugin install project-bootstrap@evolvehq
+/plugin install docflow@evolvehq
 ```
 
 The first command pulls the latest marketplace listing (a `git fetch`
@@ -251,13 +252,13 @@ To check what's installed and the resolved version:
 To remove the plugin entirely:
 
 ```
-/plugin uninstall project-bootstrap@evolvehq
+/plugin uninstall docflow@evolvehq
 ```
 
 ### As the author (you, maintaining this repo)
 
-1. Edit the skill body (`skills/project-bootstrap/SKILL.md`), templates
-   (`skills/project-bootstrap/templates/*.md`), or supporting docs.
+1. Edit a skill body (`skills/<name>/SKILL.md`), the bootstrap templates
+   (`skills/bootstrap/templates/*.md`), or supporting docs.
 2. Bump the `version` field in `.claude-plugin/plugin.json` following
    semver — patch for fixes, minor for new questions / templates,
    major for breaking changes to the skill flow.
@@ -268,16 +269,18 @@ To remove the plugin entirely:
 
 If you tag releases, use `git tag vX.Y.Z` matching `plugin.json`.
 Tags help recipients pin to a specific version via
-`/plugin install project-bootstrap@evolvehq@vX.Y.Z` (when supported by
-their Claude Code version).
+`/plugin install docflow@evolvehq@vX.Y.Z` (when supported by their
+Claude Code version).
 
 ## 9. Troubleshooting
 
 - **Skill not appearing in the available-skills list.** Confirm the
   plugin is installed (`/plugin list`) or `--plugin-dir` was passed.
   Restart the Claude Code session.
-- **Slash command not found.** The slash form is `/project-bootstrap`
-  exactly (hyphenated, lowercase).
+- **Slash command not found.** The bootstrap slash form is `/bootstrap`
+  (lowercase); lifecycle commands are `/new-adr`, `/new-plan`,
+  `/ship-item`, `/add-convention`, `/audit`, `/brainstorm`,
+  `/agent-wave`.
 - **Skill asks questions the project already answered.** That's by
   design — the skill does not persist state between invocations.
   Answer briefly; the second run is faster.

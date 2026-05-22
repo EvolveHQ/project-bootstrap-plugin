@@ -13,7 +13,7 @@ to `/new-adr` and `/new-plan`.
 ## Step 0 — Preconditions and context
 
 1. Confirm the repo is bootstrapped (or note that the output can seed a
-   fresh `/project-bootstrap`).
+   fresh `/bootstrap`).
 2. Read `CONVENTIONS.md` for ADR shape and lifecycle, and skim
    `INDEX.md` + existing ADRs so candidates don't duplicate or
    contradict what already exists, and so dependencies point at real

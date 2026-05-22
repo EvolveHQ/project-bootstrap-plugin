@@ -1,9 +1,9 @@
 ---
-name: project-bootstrap
-description: Scaffold or retrofit documentation-led conventions (AGENTS.md, CLAUDE.md, CONVENTIONS.md, ADR catalogue, plan/ queue, _agent/ coordination) into a repo. Use when the user asks to "set up conventions", "bootstrap ADRs", "scaffold the documentation-led layout", "add AGENTS.md and a plan queue", or invokes /project-bootstrap. Works on fresh repos and existing ones — preserves existing content and merges rather than overwrites.
+name: bootstrap
+description: Scaffold or retrofit documentation-led conventions (AGENTS.md, CLAUDE.md, CONVENTIONS.md, ADR catalogue, plan/ queue, _agent/ coordination) into a repo. Use when the user asks to "set up conventions", "bootstrap ADRs", "scaffold the documentation-led layout", "add AGENTS.md and a plan queue", or invokes /bootstrap. Works on fresh repos and existing ones — preserves existing content and merges rather than overwrites.
 ---
 
-# project-bootstrap
+# bootstrap
 
 You are installing (or retrofitting) a documentation-led convention set
 in the current repo. The end state is a repo that can be driven by

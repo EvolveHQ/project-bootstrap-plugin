@@ -1,7 +1,7 @@
 {
-  "name": "project-bootstrap",
+  "name": "docflow",
   "description": "Documentation-led project conventions for Claude Code: a bootstrap skill that scaffolds AGENTS.md, an ADR catalogue, a plan/ queue, and _agent/ coordination — plus lifecycle skills to author ADRs, queue and ship work, add conventions, audit consistency, brainstorm decisions, and run agent waves.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": {
     "name": "Eugenio Minardi",
     "email": "eugenio.minardi@evolvehq.io"
